@@ -38,7 +38,7 @@ public:
 	 << "Decompresses from the input source. Use '-' to use stdin." 
 	 << endl;
     cerr << "-o <output>" << "\t"
-	 << "The result is written to output. Use '-' to write to stdout." 
+	 << "The result is written to output. Use '-' to use stdout." 
 	 << endl;
     cerr << "-a <algorithm>" << "\t"
 	 << "Valid algorithms are 'huf', 'lz77', 'lz78' and 'lzw'." 
