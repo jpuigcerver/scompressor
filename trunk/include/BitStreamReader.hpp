@@ -1,6 +1,6 @@
 /**
  * @file BitStreamReader.hpp
- * @brief Fitxer amb la implementació de la classe BitStreamReader.
+ * @brief File including the implementation of BitStreamReader class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -15,23 +15,24 @@
 
 /**
  * @class BitStreamReader
- * @brief Implementació d'un lector de bits des d'un fluxe de dades.
+ * @brief This class implements a bit reader from a data stream.
+ * @see StreamReader
  */
 class BitStreamReader: public StreamReader<Bit> {
 private:
-  /** Definició del tipus byte com un char. */
+  /** Definition of byte. */
   typedef char byte;
-  /** Buffer de lectura. */
+  /** Buffer. */
   byte bit_buffer;
-  /** Possició en el buffer de lectura. */
+  /** Possition in the buffer. */
   uint8_t buffer_pos;
-  /** Nombre de símbols llegits en l'última operació de lectura. */
+  /** Number of read symbols since the last input operation. */
   size_t last_read;
 
 public:
   /**
-   * @brief Constructor per defecte.
-   * Els bits es llegeixen de l'entrada estàndard.
+   * @brief Default constructor.
+   * The input stream is the standard input.
    */
   BitStreamReader() 
     : StreamReader<Bit>(), bit_buffer(0x00), buffer_pos(0xFF), last_read(0)
@@ -39,20 +40,21 @@ public:
 
   /**
    * @brief Constructor.
-   * Els bits es llegeixen des del fluxe indicat.
+   * Bits will be written from the indicated data stream.
+   * @param in input stream.
    */
   BitStreamReader(std::istream& in)
     : StreamReader<Bit>(in), bit_buffer(0x00), buffer_pos(0xFF), last_read(0)
   { }
     
   /**
-   * @brief Llegeix un bit des del fluxe.
+   * @brief Reads a single bit from the input stream.
    *
-   * Es llegeix un byte sencer del fluxe d'entrada
-   * i van llegint-se un a un els bits. Quan s'han 
-   * llegit tots els bits del byte, es llegeix un nou
-   * byte del fluxe.
-   * @return Bit llegit des de l'entrada.
+   * Actually, it reads a byte from the imput stream
+   * and each bit is returned in the successive calls.
+   * When all the bits of the read byte are returned,
+   * a new byte will be read then.
+   * @return read bit.
    */
   Bit get()
   {
@@ -69,13 +71,13 @@ public:
   }
 
   /**
-   * @brief Llegeix un nombre determinat de bits i ho interpreta com un valor 
-   * de tipus size_t.
-   * @param bits nombre de bits a llegir des del fluxe.
-   * @return valor llegit des del fluxe.
+   * @brief Reads a given number of bits from the input stream. The 
+   * read chunk of bits is interpreted as a size_t unsigned number.
+   * @param bits number of bits to read.
+   * @return read value.
    * @see get()
    */
-  size_t get(char bits)
+  size_t get(unsigned char bits)
   {
     assert(bits >= 1 && (unsigned)bits <= BYTES2BITS(sizeof(size_t)));
     size_t res = 0x00;
@@ -85,10 +87,10 @@ public:
   }
 
   /**
-   * @brief Llegeix una seqüència de n bits des del fluxe d'entrada.
-   * @param vec adreça on emmagatzemar la seqüència llegida.
-   * @param n nombre de bits a llegir.
-   * @return Aquest mètode torna *this.
+   * @brief Reads a sequence of bits from the input stream.
+   * @param vec Adress where the sequence will be stored.
+   * @param n number of bits to read.
+   * @return This method returns *this.
    * @see get()
    */
   std::istream& read(Bit * vec, size_t n)
@@ -99,10 +101,10 @@ public:
   }
 
   /**
-   * @brief Llegeix una seqüència de n bytes des del fluxe d'entrada.
-   * @param vec adreça on emmagatzemar la seqüència llegida.
-   * @param n nombre de bits a llegir.
-   * @return Aquest mètode torna *this.
+   * @brief Reads a sequence of bytes from the input stream.
+   * @param vec Adress where the sequence will be stored.
+   * @param n number of bytes to read.
+   * @return This method returns *this.
    * @see get()
    */
   std::istream& read(byte * vec, size_t n) 
@@ -117,9 +119,9 @@ public:
   }
 
   /**
-   * @brief Llegeix un bit des del fluxe d'entrada.
-   * @param d bit on emmagatzemar el valor llegit del fluxe d'entrada.
-   * @return Aquest mètode torna *this.
+   * @brief Reads a bit from the input stream.
+   * @param d bit object that will contain the read value.
+   * @return This method returns *this.
    * @see get()
    */
   std::istream& operator >> (Bit& d)
@@ -129,9 +131,8 @@ public:
   }
 
   /** 
-   * @brief Recupera el nombre de bits llegits en l'última operació
-   * de lectura.
-   * @return bits llegits en l'última operació.
+   * @brief Retrieves the number of read bits in the last input operation.
+   * @return number of read bits in the last input operation.
    */
   std::streamsize gcount() const
   {

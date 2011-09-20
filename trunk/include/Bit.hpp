@@ -1,6 +1,6 @@
 /**
  * @file Bit.hpp
- * @brief Fitxer amb la implementació de la classe Bit.
+ * @brief File including the implementation of Bit class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -12,44 +12,44 @@
 
 /**
  * @def BYTES2BITS
- * @brief Converteix un valor en bytes a bits (multiplica per 8).
+ * @brief Convert a value in bytes to bits. x8 multiplication. (i.e: 2 bytes = 1 bits).
  */
 #define BYTES2BITS(A) (A << 3)
 
 /**
  * @class Bit
- * @brief Implementació del tipus 'bit'. 
+ * @brief This class implements the abstract type of 'bit'.
  *
- * Internament és un char, però que sols pot tenir el valor 
- * 0 o 1, útil per a fer operacions amb bits.
- * A més, es sobrecarrega l'operador << de ostreams per a que 
- * mostre el caràcter '0' o '1' depenent del seu valor.
+ * Internally is a char, but it is only allowed to have the value
+ * 0 or 1. This is useful to do bit operations.
+ * Moreover, this class overload the << operator of class ostream to
+ * show the value correctly.
  */
 class Bit {
 private:
-  /** Valor del bit. */
+  /** Value. */
   char value;
 
 public:
   /**
-   * @brief Constructor buit per defecte. Bit a zero.
+   * @brief Default constructor. Default value is zero.
    */
   Bit() 
     : value(0)
   {}
 
   /**
-   * @brief Constructor de còpia a partir d'un char.
-   * @param val Valor del bit a copiar.
-   * Qualsevol valor distint de 0, s'interpreta com a 1. 
+   * @brief Copy constructor.
+   * @param val bit's value.
+   * Any value distinct to 0 is considered 1.
    */ 
   Bit(char val)
     : value(val ? 1 : 0)
   {}
 
   /**
-   * @brief Operador de casting per al tipus (char).
-   * @return valor del bit.
+   * @brief Casting operator to char.
+   * @return bit's value.
    */
   operator char () const
   {
@@ -57,8 +57,8 @@ public:
   }
 
   /**
-   * @brief Operador de casting per al tipus (const char *).
-   * @return representació en forma de cadena de caràcters del valor del bit.
+   * @brief Casting operator to const char *.
+   * @return bit's value as a character string (0->"0", 1->"1").
    */
   operator const char * () const
   {
@@ -66,12 +66,12 @@ public:
   }
 
   /**
-   * @brief Sobrecàrrega de l'operador << per a la classe ostream.
-   * Escriu en el stream la representació en forma de caràcter del valor
-   * del bit.
-   * @param os objecte de tipus ostream sobre el que s'escriurà.
-   * @param bit objecte Bit a escriure en el stream.
-   * @return ostream d'entrada.
+   * @brief Operator << of ostream class is overloaded.
+   * This writes in the output stream the bit's value
+   * as a character (0->'0', 1->'1').
+   * @param os output stream.
+   * @param bit bit object to write.
+   * @return ostream output stream.
    */
   friend std::ostream& operator << (std::ostream& os, const Bit bit) {
     os << (bit.value ? '1' : '0');

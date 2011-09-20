@@ -1,6 +1,6 @@
 /**
  * @file BitStreamWriter.hpp
- * @brief Fitxer amb la implementació de la classe BitStreamWriter.
+ * @brief File including the implementation of BitStreamWriter class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -15,20 +15,19 @@
 
 /**
  * @class BitStreamWriter
- * @brief Implementació d'un escriptor de bits sobre un fluxe d'eixida.
+ * @brief This class implements a bit writer to a data stream.
  * @see StreamWriter
- * @see CharStreamWriter
  */
 class BitStreamWriter : public StreamWriter<Bit> {
 private:
-  /** Definició del tipus byte com un char. */
+  /** Definition of byte. */
   typedef char byte;
-  /** Buffer d'escriptura. */
+  /** Buffer. */
   byte bit_buffer;
-  /** Possició en el buffer d'escriptura. */
+  /** Possition in the buffer. */
   uint8_t buffer_pos;
   
-  /** Mètode per a inicialitzar el buffer. */
+  /** Initializes the buffer. */
   inline void initBuffer(void)
   {
     bit_buffer = 0x00;
@@ -37,8 +36,8 @@ private:
   
 public:
   /**
-   * @brief Constructor per defecte.
-   * Els bits s'escriuran en l'eixida estàndard.
+   * @brief Default constructor.
+   * Bits will be written to the standard output.
    */
   BitStreamWriter() 
     : StreamWriter<Bit>(), 
@@ -47,8 +46,8 @@ public:
   
   /** 
    * @brief Constructor. 
-   * Els bits s'escriuen en el fluxe indicat. 
-   * @param out fluxe sobre el que s'escriuran els bits.
+   * Bits will be written to the indicated data stream.
+   * @param out output stream.
    */
   BitStreamWriter(std::ostream& out)
     : StreamWriter<Bit>(out),
@@ -56,15 +55,15 @@ public:
   { }
   
   /**
-   * @brief Escriu un bit en el fluxe d'eixida.
+   * @brief Writes a bit to the output stream.
    *
-   * Els bits s'escriuen primer en un buffer d'eixida i quan aquest buffer s'ompli,
-   * el seu contingut es volca al fluxe d'eixida i es reinicialitza el buffer.
+   * Bits are written to a output buffer and when this is full,
+   * its content is flushed to the output stream and the buffer is reset.
    * 
-   * IMPORTANT: Pot succeir que queden bits en el buffer que no han estat
-   * volcats al fluxe d'eixida. Per a forçar el volcat s'utilitza el mètode flush().
-   * @param d bit a escriure en el fluxe.
-   * @return Aquest mètode torna *this.
+   * WARNING: It is important to use the flush() method to ensure that all bits
+   * are written after the last output operation.
+   * @param d bit to be written.
+   * @return This method returns *this.
    * @see flush()
    */
   std::ostream& put(const Bit& d)
@@ -78,14 +77,13 @@ public:
   }
 
   /**
-   * @brief Escriu un valor de tipus size_t utilitzant un nombre determinat 
-   * de bits.
+   * @brief Writes a size_t number using a given number of bits.
    *
-   * IMPORTANT: Pot succeir que queden bits en el buffer que no han estat
-   * volcats al fluxe d'eixida. Per a forçar el volcat s'utilitza el mètode flush().
-   * @param val valor a escriure.
-   * @param bits bits a utilitzar.
-   * @return Aquest mètode torna *this.
+   * WARNING: It is important to use the flush() method to ensure that all bits
+   * are written after the last output operation.
+   * @param val value to be written.
+   * @param bits number of bits to use.
+   * @return This method returns *this.
    * @see put()
    * @see flush()
    */
@@ -98,13 +96,13 @@ public:
   }
 
   /**
-   * @brief Escriu una seqüència de bits sobre el fluxe d'eixida.
+   * @brief Writes a sequence of bits to the output stream.
    *
-   * IMPORTANT: Pot succeir que queden bits en el buffer que no han estat
-   * volcats al fluxe d'eixida. Per a forçar el volcat s'utilitza el mètode flush().
-   * @param vec seqüència de bits a escriure en el fluxe.
-   * @param n nombre de bits en la seqüència.
-   * @return Aquest mètode torna *this.
+   * WARNING: It is important to use the flush() method to ensure that all bits
+   * are written after the last output operation.
+   * @param vec bits sequence to be written.
+   * @param n number of bits in the sequence.
+   * @return This method returns *this.
    * @see put()
    * @see flush()
    */
@@ -116,13 +114,13 @@ public:
   }
 
   /**
-   * @brief Escriu una seqüència de bytes sobre el fluxe d'eixida.
+   * @brief Writes a sequence of bytes to the output stream.
    *
-   * IMPORTANT: Pot succeir que queden bits en el buffer que no han estat
-   * volcats al fluxe d'eixida. Per a forçar el volcat s'utilitza el mètode flush().
-   * @param vec seqüència de bytes a escriure en el fluxe.
-   * @param n nombre de bytes en la seqüència.
-   * @return Aquest mètode torna *this.
+   * WARNING: It is important to use the flush() method to ensure that all bits
+   * are written after the last output operation.
+   * @param vec bytes sequence to be written.
+   * @param n number of bytes in the sequence.
+   * @return This method returns *this.
    * @see put()
    * @see flush()
    */
@@ -135,12 +133,12 @@ public:
   }
 
   /**
-   * @brief Escriu un bit en el fluxe d'eixida.
+   * @brief Writes a bit to the output stream.
    * 
-   * IMPORTANT: Pot succeir que queden bits en el buffer que no han estat
-   * volcats al fluxe d'eixida. Per a forçar el volcat s'utilitza el mètode flush().
-   * @param d bit a escriure en el fluxe.
-   * @return Aquest mètode torna *this.
+   * WARNING: It is important to use the flush() method to ensure that all bits
+   * are written after the last output operation.
+   * @param d bit to be written.
+   * @return This method returns *this.
    * @see put()
    * @see flush()
    */
@@ -150,21 +148,20 @@ public:
   }
   
   /**
-   * @brief Força l'escriptura del buffer en el fluxe d'eixida i reinicia
-   * el buffer d'eixida.
+   * @brief Forces the content of the buffer to be written to the output stream.
    *
-   * Les dades escrites després de l'últim bit ocupat en el buffer 
-   * són desconegudes (contindran els bits de l'operació d'escriptura anterior).
-   * Per exemple, si el buffer sols té ocupades les 2 primeres possicions, 
-   * el contingut del buffer serà p.ex: 01XXXXXX. El byte sencer s'escriurà en
-   * el fluxe d'eixida.
-   * @return Aquest mètode torna *this.
+   * The data after the last bit in the buffer are unknown (they will probably contain
+   * bits from the previous operations).
+   * For example, if the buffer has only its two firs positions occupied,
+   * the content of the buffer will be for instance: 01XXXXXX. The whole byte will be
+   * written in the output stream.
+   * @return This method returns *this.
    */
   std::ostream& flush(void)
   {
     if ( buffer_pos != BYTES2BITS(sizeof(byte))-1 ) {
       ((std::ostream*)this)->put(bit_buffer);
-      initBuffer();   // reiniciem buffer
+      initBuffer();   // reset buffer
     }
     ((std::ostream*)this)->flush();
     return *this;
