@@ -1,6 +1,6 @@
 /**
  * @file HuffmanTree.hpp
- * @brief Fitxer amb la implementació de la classe HuffmanTree.
+ * @brief File including the implementation of HuffmanTree class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */

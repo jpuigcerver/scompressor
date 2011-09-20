@@ -1,6 +1,6 @@
 /**
  * @file Codification.hpp
- * @brief Fitxer amb la implementació de la classe Codification.
+ * @brief File including the implementation of Codification class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -13,25 +13,21 @@
 
 /**
  * @class Codification
- * @brief Classe que representa una funció de codificació entre els
- * símbols d'un alfabet A i cadenes formades amb símbols d'un alfabet B.
- *
- * Els símbols poden ser objectes de qualsevol tipus, encara que generalment
- * seran de tipus char. Les cadenes es representen com un vector de 
- * símbols.
+ * @brief Class representing a codification between symbols of an alphabet A and
+ * strings formed by symbols of an alphabet B.
  */
 template <typename SymbA, typename SymbB>
 class Codification : public std::map< SymbA, std::vector<SymbB> >{
   /**
-   * @brief Volca una codificació en un fluxe d'eixida de la forma:
+   * @brief Shows the codification to a output stream as follows:
    *
-   * simbol_1: codi_1\n
-   * simbol_2: codi_2\n
+   * symbol_1: code_1\n
+   * symbol_2: code_2\n
    * ...\n
-   * simbol_n: codi_n
-   * @param os Fluxe d'eixida sobre el que escriure la codificació.
-   * @param codif Codificació a escriure.
-   * @return Aquest mètode torna el fluxe d'eixida en el que s'ha volcat la codificació.
+   * symbol_n: code_n
+   * @param os output stream.
+   * @param codif codification.
+   * @return This method returns the output stream.
    */
   friend std::ostream& operator << (std::ostream& os, const Codification<SymbA,SymbB> & codif)
   {
