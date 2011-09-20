@@ -1,6 +1,6 @@
 /**
  * @file HuffmanCompressor.hpp
- * @brief Fitxer amb la implementació de la classe HuffmanCompressor.
+ * @brief File including the implementation of HuffmanCompressor class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -14,85 +14,64 @@
 #include <HuffmanTree.hpp>
 #include <BitStreamWriter.hpp>
 #include <BitStreamReader.hpp>
+#include <Bit.hpp>
 
 /**
  * @class HuffmanCompressor
- * @brief Implementació d'un compressor i descompressor que utilitza 
- * l'algorisme de Huffman.
+ * @brief Implementation of a compressor/decompressor using Huffman's algorithm.
  *
- * Per a comprimir, en primer lloc es llegeixen totes les dades a llegir i es genera una font
- * de memòria nula associada a aquestes dades.
+ * To compress data, first all the data is read and a null source and a null memory source is generated
+ * associated to this data.
  *
- * En segon lloc es construeix un arbre de Huffman a partir d'aquesta font.
- * 
- * En al capçalera del fitxer comprimit s'escriu el número de versió de l'algorisme,
- * el nombre de símbols que hi ha comprimits a continuació (nombre de bytes del fitxer original)
- * i l'abre de Huffman serialitzat.
+ * Then, a Huffman tree is built from this source. This tree will be serialized and written to the
+ * headers section of the compressed output.
  *
- * Finalment, s'utilitza la codificació de la font de memòria nula obtinguda
- * de l'abre de Huffman (que associa a cada símbol un codi binari) per comprimir el fitxer,
- * escrivint el codi de Huffman de cada símbol.
+ * Finally, the Huffam tree is used to get the optimal codification of the data and the codification of 
+ * each symbol of the input is written to the compressed output.
  *
- * Per a descomprimir, es llegeix la capçalera i es deserialitza l'abre de Huffman serialitzat.
+ * To decompress data, the header section is read and the Huffman tree is reconstructed.
  *
- * En segon lloc i mentre queden símbols per a descomprimir, van llegint-se bits i va creant-se
- * un camí en l'abre de Huffman fins arribar a un node que conté un terminal, que s'escriurà en
- * la sortida. El camí és esborrat i torna a l'arrel de l'arbre com a origen.
+ * Then, the remaining data in the input stream is read bit by bit and is decompressed using the Huffman's tree and 
+ * is written to the output stream.
  *
  * Notes:
- * La grandària del fitxer a comprimir està limitada a \f$2^{32}\f$ bytes.
+ * It is only possible to compress data from files, since the data must be read twice.
+ * The maximum size of the compressed data is limited to \f$2^{32}\f$ bytes.
  *
  * @see NullSource
  * @see HuffmanTree
  */
 class HuffmanCompressor : public GenericCompressor {
 private:
-  /** Número de versió del compressor. */
+  /** Version number. */
   static const unsigned char COMPRESSOR_VERSION;
 
-  /** Font de memòria nula utilitzada per a la compressió. */
+  /** Null memory source used in the compression. */
   NullSource source;
-  /** Arbre de Huffman utilitzat per a la compressió i descompressió. */
+  /** Huffman tree used to compress and decompress. */
   HuffmanTree huffman;
-  /** Codificació de Huffman de la font de memòria nula. */
+  /** Codification of the null memory source. */
   Codification<char,Bit> codification;
-  /** Nombre de símbols comprimits. */
+  /** Number of compressed symbols (bytes). */
   uint32_t numCompressedSymbols;
 
   /** 
-   * @brief Escriu la capçalera sobre un fluxe d'eixida utilitzant un 
-   * escriptor binari. 
-   *
-   * Primer escriu un número de versió (8 bits), després el nombre de 
-   * símbols comprimits (32 bits) i finalment l'abre de Huffman
-   * serialitzat (longitud variable).
-   * @param output escriptor binari sobre el flux d'eixida.
-   * @return true si tot ha anat bé, false en cas d'error.
+   * @brief Writes the header to the output stream.
+   * @param output binary stream writer.
+   * @return true if it was successful, false otherwise.
    */
   inline bool writeHeader(BitStreamWriter& output)
   {
     if( !output.put(COMPRESSOR_VERSION, 8).good() ) return false;
     if( !output.put(numCompressedSymbols, 32).good() ) return false;
     if( !huffman.serializeTree(output) ) return false;
-#ifdef DEBUG
-    std::cout << "HUFFMAN HEADER:" << std::endl;
-    std::cout << "VERSION: " << (size_t)COMPRESSOR_VERSION << std::endl;
-    std::cout << "TOTAL SYMBOLS: " << numCompressedSymbols << std::endl;
-    std::cout << "HUFFMAN CODE: " << std::endl;
-    std::cout << codification;
-#endif
     return true;
   }
 
   /** 
-   * @brief Llegeix la capçalera des d'un fluxe d'entrada utilitzant un 
-   * lector binari. 
-   *
-   * Primer llegeix el número de versió (8 bits), després l'abre de Huffman
-   * serialitzat (longitud variable) i finalment el nombre de símbols
-   * comprimits (32 bits).
-   * @param input lector binari sobre el flux d'entrada.
-   * @return true si tot ha anat bé, false en cas d'error.
+   * @brief Reads the header from the input stream.
+   * @param input binary stream reader.
+   * @return true if it was successful, false otherwise.
    */
   inline bool readHeader(BitStreamReader& input)
   {
@@ -101,21 +80,14 @@ private:
     numCompressedSymbols = input.get(32);
     if( numCompressedSymbols > 0 && !(huffman.deserializeTree(input)) ) return false;
     if ( !input.good() ) return false;
-#ifdef DEBUG
-    std::cout << "HUFFMAN HEADER:" << std::endl;
-    std::cout << "VERSION: " << (size_t)version << std::endl;
-    std::cout << "TOTAL SYMBOLS: " << numCompressedSymbols << std::endl;
-    std::cout << "HUFFMAN CODE: " << std::endl;
-    std::cout << codification;
-#endif
     return true;
   }
 
   /**
-   * @brief Llegeix les dades a comprimir i crea una font de memòria nula i la seva
-   * codificació.
-   * @param input fluxe de dades a comprimir.
-   * @return true si tot ha anat bé, false en cas d'error.
+   * @brief Reads the uncompressed data and creates the null memory source and computes 
+   * its optimal codification.
+   * @param input input stream to be compressed.
+   * @return true if it was successful, false otherwise.
    */
   inline bool readUncompressedData(std::istream& input) 
   {
@@ -127,22 +99,18 @@ private:
   }
 
   /**
-   * @brief Escriu les dades a comprimir sobre un fluxe d'eixida
-   * manejat per un escriptor binari.
-   * @param input fluxe de dades a comprimir.
-   * @param output escriptor binari que gestiona l'eixida.
-   * @return true si tot ha anat bé, false en cas d'error.
+   * @brief Writes the compressed data to a output stream using a binary stream writer.
+   * @param input input stream to be compressed.
+   * @param output binary stream writer.
+   * @return true if it was successful, false otherwise.
    */
   bool writeCompressedData(std::istream& input, BitStreamWriter& output)
   {
-    /* Com que s'haurà arribat al final del fluxe per a inicialitzar
-       l'abre, tornem al principi i esborrem els flags del fluxe d'entrada. */
+    /* We need to read all the data again. */
     input.clear();
     input.seekg(0, std::ios::beg);
     
-    /* Si sols tenim un símbol no em de comprimir res, 
-       únicament amb la capçalera tenim prou per 
-       a descomprimir el fitxer. */
+    /* If there is one or no symbol, then there is nothing to be compressed. */
     if ( codification.size() <= 1 ) return true;
 
     while( !input.eof() ) {
@@ -160,22 +128,21 @@ private:
   }
 
   /**
-   * @brief Llegeix les dades comprimides utilitzant un lector binari i escriu
-   * les dades descomprimides sobre un fluxe d'eixida.
-   * @param input lector binari que gestiona la lectura binària des del fluxe d'entrada.
-   * @param output fluxe d'eixida de les dades descomprimides.
-   * @return true si tot ha anat bé, false en cas d'error.
+   * @brief Read the compressed data using a binary stream reader and writes the uncompressed
+   * data to a output stream.
+   * @param input binary stream reader.
+   * @param output output stream.
+   * @return true if it was successful, false otherwise.
    */
   bool writeUncompressedData(BitStreamReader& input, std::ostream& output) 
   {
     size_t read_symbols = 0;
 
-    /* Si no es van comprimir símbols, hem acabat. */
+    /* If no symbols were compressed, it is done. */
     if ( numCompressedSymbols == 0 ) return true;
 
-    /* Si l'arrel és fulla, sols hi ha un símbol. S'escriurà
-       eixe símbol tantes vegades com indique el camp 
-       Número de símbols del fitxer. */
+    /* If the root is a leaf, there is just one symbol. It will be written as times as indicated by
+       the numCompressedSymbols field in the header. */
     if ( huffman.currentNodeIsLeaf() ) {
       for(size_t i = 0; i < numCompressedSymbols; ++i) {
 	output.put( huffman.getCurrentSymbol() );
@@ -184,16 +151,16 @@ private:
       return true;
     }
 
-    /* Mentre queden símbols per descomprimir i puguem llegir de l'entrada... */
+    /* While there are symbols to be decompressed... */
     while ( input.good() && read_symbols < numCompressedSymbols ) {
-      /* Llegim bit. */
+      /* Read a bit. */
       Bit b = input.get();
       if ( input.good() ) {
-	/* Afegim bit al camí. */
+	/* The bit is added to the current path in the Huffman tree. */
 	huffman.addToCurrentPath(b);
 	if ( huffman.currentNodeIsLeaf() ) {
-	  /* Si hem arribat a una arrel, emitim símbol comprimit
-	     i reiniciem el camí en l'abre. */
+	  /* If the current node is a leaf, the codified symbols is write and
+	     the path is reset. */
 	  ++read_symbols;
 	  output.put( huffman.getCurrentSymbol() );
 	  if ( !output.good() ) return false;
@@ -232,10 +199,10 @@ const unsigned char HuffmanCompressor::COMPRESSOR_VERSION = 1;
 
 /**
  * @example HuffmanCompressorExample.cpp
- * @brief Aquest exemple mostra com utilitzar la classe HuffmanCompressor
- * per a comprimir un fitxer de dades.
+ * @brief This example explains how to use the HuffmanCompressor class
+ * to compress data from a file.
  *
  * @example HuffmanDecompressorExample.cpp
- * @brief Aquest exemple mostra com utilitzar la classe HuffmanCompressor
- * per a descomprimir un fitxer de comprimit utilitzant el mètode Huffman.
+ * @brief This example explains how to use the HuffmanCompressor class
+ * to decompress data.
  */

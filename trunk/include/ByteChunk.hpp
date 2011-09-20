@@ -13,20 +13,20 @@
 
 /**
  * @class ByteChunk
- * @brief Classe que gestiona un bloc de bytes. Alternativa més
- * eficient i personalitzada a utilitzar un vector<char>.
+ * @brief This class manages a chunk of bytes. This is a personalized
+ * alternative to vector<char>.
  */
 class ByteChunk {
-  /** Bloc de bytes. */
+  /** Chunk of bytes. */
   char * _chunk;
-  /** Grandària actual del bloc de bytes. */
+  /** Current size of the chunk of bytes. */
   size_t _size;
-  /** Capacitat del bloc de bytes. */
+  /** Capacity of the chunk. */
   size_t _capacity;
 
   /**
-   * @brief Reserva espai per al bloc de bytes.
-   * @param capacity grandària del bloc de bytes (capacitat).
+   * @brief This allocates the space for the chunk.
+   * @param capacity number of bytes to be allocated.
    */
   inline void _allocate ( size_t capacity )
   {
@@ -35,46 +35,45 @@ class ByteChunk {
   }
 
   /**
-   * @brief Copia un segment de dades.
-   * @param src punter a les dades a copiar.
-   * @param size grandària del bloc de bytes a copiar.
+   * @brief This copies a sequence of bytes to the chunk.
+   * @param src sequence to be copied.
+   * @param size length of the sequence.
    */
   inline void _copy ( const char * src, size_t size )
   { if ( size > 0 ) memcpy ( _chunk, src, size ); }
 
 public:
   /**
-   * @brief Constructor per defecte. Crea un bloc de bytes buit.
+   * @brief Default constructor.
    */
   ByteChunk ( ) : _chunk(0), _size(0), _capacity(0) { }
 
   /**
-   * @brief Constructor de còpia. 
-   * @param bc bloc de bytes. 
+   * @brief Copy constructor.
+   * @param bc chunk of bytes.
    */
   ByteChunk ( const ByteChunk& bc ) : _chunk(0), _size(bc._size), _capacity(bc._size) 
   { if(_capacity > 0){ _allocate(_capacity); _copy(bc._chunk, bc._size); } }
 
   /**
-   * @brief Constructor de còpia a partir d'una seqüència de bytes. 
-   * @param chunk seqüència de bytes.
-   * @param size grandària de la seqüència.
+   * @brief Copy constructor.
+   * @param chunk sequence of bytes.
+   * @param size length of the sequence.
    */
   ByteChunk ( const char * chunk, size_t size ) : _chunk(0), _size(size), _capacity(size)
   { if(_capacity > 0){ _allocate(_capacity); _copy(chunk, _size); } }
 
   /**
-   * @brief Constructor de còpia a partir d'un byte. Crea un nou bloc de bytes amb
-   * contingut igual al del byte indicat.
-   * @param byte byte a copiar.
+   * @brief Copy constructor.
+   * This creates a chunk of size 1 and the value as indicated.
+   * @param byte byte to be allocated.
    */
   ByteChunk ( const char byte ) : _chunk(0), _size(1), _capacity(_size)
   { _allocate(_capacity); _chunk[0] = byte; }
 
   /**
-   * @brief Constructor per capacitat. Crea un nou bloc de bytes amb capacitat màxima 
-   * la indicada.
-   * @param capacity capacitat màxima del bloc de bytes.
+   * @brief Constructor. This creates a new chunk with the indicated capacity.
+   * @param capacity capacity of the chunk.
    */
   ByteChunk ( const size_t capacity ) : _chunk(0), _size(0), _capacity(capacity)
   { if(_capacity > 0){ _allocate(_capacity); } }
@@ -86,9 +85,9 @@ public:
   { clear(); }
 
   /**
-   * @brief Copia el contingut d'un bloc de bytes a un altre.
-   * @param bc bloc de bytes a copiar.
-   * @return aquest mètode torna *this.
+   * @brief Copy operator.
+   * @param bc ByteChunk to be copied.
+   * @return this method returns *this.
    */
   ByteChunk& operator = ( const ByteChunk& bc )
   {
@@ -102,28 +101,25 @@ public:
   }
 
   /**
-   * @brief Compara el contingut del bloc amb un altre per veure si coincideixen.
-   * @param bc bloc de bytes a comparar.
-   * @return torna true si els dos blocs tenen la mateixa grandària i el seu
-   * contingut és identic, o false en cas contrari.
+   * @brief Compares the content of two chunks to determine whether they are equal.
+   * @param bc the second chunk the be compared.
+   * @return true if the two chunks are equal, false otherwise.
    */
   inline bool operator == ( const ByteChunk& bc ) const
   { return ( _size == bc._size && memcmp(_chunk, bc._chunk, _size) == 0 ); }
 
   /**
-   * @brief Compara el contingut del bloc amb un altre per veure si difereixen.
-   * @param bc bloc de bytes a comparar.
-   * @return torna true si els dos blocs tenen grandària diferent o si el seu
-   * contingut és diferent. Torna false en cas contrari.
+   * @brief Compares the content of two chunks to determine wheter they are distinct.
+   * @param bc the second chunk the be compared.
+   * @return true if the two chunks are distinct, false otherwise.
    */
   inline bool operator != ( const ByteChunk& bc ) const
   { return ( _size != bc._size || memcmp(_chunk, bc._chunk, _size) != 0 ); }
 
   /**
-   * @brief Compara el contingut del bloc amb un altre en ordre lexicogràfic.
-   * @param bc bloc de bytes a comparar.
-   * @return torna true si el bloc és menor que el bloc a comparar en ordre
-   * lexicogràfic, o false en cas contrari.
+   * @brief Compares the content of two chunks in lexicographic order.
+   * @param bc the second chunk the be compared.
+   * @return true if the chunk is lower than the second chunk, false otherwise.
    */
   inline bool operator < ( const ByteChunk& bc ) const
   { 
@@ -132,10 +128,9 @@ public:
   }
 
   /**
-   * @brief Compara el contingut del bloc amb un altre en ordre lexicogràfic.
-   * @param bc bloc de bytes a comparar.
-   * @return torna true si el bloc és major que el bloc a comparar en ordre
-   * lexicogràfic, o false en cas contrari.
+   * @brief Compares the content of two chunks in lexicographic order.
+   * @param bc the second chunk the be compared.
+   * @return true if the chunk is higher than the second chunk, false otherwise.
    */
   inline bool operator > ( const ByteChunk& bc ) const
   { 
@@ -144,50 +139,49 @@ public:
   }
 
   /**
-   * @brief Accedeix a l'element d'una possició en el bloc de bytes.
-   * @param p possició de l'element a accedir.
-   * @return referència a l'element en la possició p.
+   * @brief Access operator to a given position of the chunk.
+   * @param p position.
+   * @return reference to the byte in the position p of the chunk.
    */
   inline char& operator [] ( size_t p )
   { assert( _size > 0 && p < _size ); return _chunk[p]; }
 
   /**
-   * @brief Accedeix a l'element d'una possició en el bloc de bytes.
-   * @param p possició de l'element a accedir.
-   * @return valor de l'element en la possició p.
+   * @brief Access operator to a given position of the chunk.
+   * @param p position.
+   * @return value of the byte in the position p of the chunk.
    */
   inline char operator [] ( size_t p ) const
   { assert( _size > 0 && p < _size ); return _chunk[p]; }
 
   /**
-   * @brief Recupera la grandària del bloc de bytes.
-   * @return grandària del bloc de bytes.
+   * @brief Returns the current size of the chunk.
+   * @return size of the chunk.
    */
   inline size_t size ( ) const
   { return _size; }
 
   /** 
-   * @brief Recupera la capacitat del bloc de bytes, és a dir
-   * quina és la grandària màxima d'aquest bloc.
-   * @return capacitat del bloc de bytes.
+   * @brief Returns the capacity of the chunk. This is, the maximum size.
+   * @return capacity of the chunk.
    */
   inline size_t capacity ( ) const
   { return _capacity; }
 
   /**
-   * @brief Allibera la memòria utilitzada pel bloc de bytes.
+   * @brief Frees memory allocated.
    */
   inline void clear ( )
   { if ( _capacity > 0 ) { delete [] _chunk; _size = _capacity = 0; } }
 
   /**
-   * @brief Canvia la grandària del bloc. 
+   * @brief Changes the chunk size.
    *
-   * Si la nova grandària és major que la capacitat actual, 
-   * s'augmenta la capacitat del bloc. El contingut dels elements
-   * nous és indeterminat.
+   * If the new size is greater than the current capacity,
+   * the capacity of the chunk is increased. 
+   * The content of the new elements is unknown.
    *
-   * @param n nova grandària del bloc de bytes.
+   * @param n new size.
    */
   void resize ( size_t n )
   {
@@ -202,17 +196,13 @@ public:
   }
 
   /**
-   * @brief Reserva espai per al bloc de dades.
+   * @brief Reserves size for the chunk.
    * 
-   * Si l'espai a reservar és menor o igual que la capacitat actual es
-   * canvia la grandària del bloc al mínim entre la grandària actual
-   * i la nova capacitat, però no es modifica la capacitat real
-   * del bloc.
+   * If the indicated space is lower or equal to the current capacity,
+   * the size is changed to the minimum between the current size and the new
+   * capacity, but the capacity is not modified in fact.
    *
-   * En canvi, si l'espai a reservar és major que la capacitat del bloc,
-   * s'augmenta la capacitat del bloc a l'indicada.
-   *
-   * @param n nova capacitat del bloc de bytes.
+   * @param n new capacity.
    */
   void reserve ( size_t n )
   {
@@ -225,10 +215,10 @@ public:
   }
 
   /**
-   * @brief Copia un byte al final del bloc.
+   * @brief A new byte is added at the end of the chunk.
    *
-   * Si el bloc no té més capacitat, s'augmenta aquesta al doble de l'actual.
-   * @param b byte a copiar.
+   * If the chunk ran out of capacity, it is increased.
+   * @param b byte to be added.
    */
   inline void push_back ( char b )
   {
@@ -237,8 +227,8 @@ public:
   }
 
   /**
-   * @brief Afegeix un bloc de bytes al final del bloc.
-   * @param bc bloc de bytes a copiar.
+   * @brief A chunk of bytes is added at the end of the chunk.
+   * @param bc chunk to be added.
    */
   inline void append ( const ByteChunk& bc )
   {
@@ -248,32 +238,32 @@ public:
   }
 
   /**
-   * @brief Recupera el punter al bloc de bytes.
-   * @return punter al bloc de bytes.
+   * @brief Returns the pointer to the chunk of bytes.
+   * @return pointer to the chunk of bytes.
    */
   inline const char * pchar ( ) const
   { return _chunk; }
 
   /**
-   * @brief Recupera l'últim element del bloc de bytes.
-   * @return últim byte.
+   * @brief Returns the last element in the chunk.
+   * @return last byte.
    */
   inline char back() const
   { assert(_size > 0); return _chunk[_size-1]; }
 
   /**
-   * @brief Recupera el primer element del bloc de bytes.
-   * @return primer byte.
+   * @brief Returns the first element in the chunk.
+   * @return first byte.
    */
   inline char front() const
   { assert(_size > 0); return _chunk[0]; }
 
   /**
-   * @brief Volca el contingut (en hexadecimal) del en un fluxe d'eixida i 
-   * separa cada byte del bloc per un espai.
-   * @param os fluxe d'eixida.
-   * @param bc bloc de bytes a volcar.
-   * @return torna la referència al fluxe d'eixida.
+   * @brief This method writes the content of a ByteChunk to a output stream.
+   * Each element is written as an hexadecimal number and separated by an space symbol.
+   * @param os output stream.
+   * @param bc chunk to be written.
+   * @return output stream.
    */
   friend std::ostream& operator << (std::ostream& os, const ByteChunk& bc)
   {
@@ -286,6 +276,10 @@ public:
 };
 
 #ifdef __GXX_EXPERIMENTAL_CXX0X__
+/**
+ * @class ByteChunkHash
+ * @brief This class computes the hash value of a chunk of bytes.
+ */
 struct ByteChunkHash {
   inline size_t operator()(const ByteChunk& x) const {
     size_t a = 1, b = 0;

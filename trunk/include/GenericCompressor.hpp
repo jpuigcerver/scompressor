@@ -1,6 +1,6 @@
 /**
  * @file GenericCompressor.hpp
- * @brief Fitxer amb la definició de la classe abstracta GenericCompressor.
+ * @brief File including the definition of the abstract GenericCompressor class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date April 2011
  */
@@ -10,24 +10,23 @@
 
 /**
  * @class GenericCompressor
- * @brief Classe abstracta que defineix els mètodes que han de proporcionar les 
- * classes compressores/descompressores per a utilitzar-se adequadament.
+ * @brief Abstract class that defines the methods that all the compressors must provide.
  */
 class GenericCompressor {
 public:
   /**
-   * @brief Comprimeix el fluxe d'entrada de input i escriu el resultat en output.
-   * @param input fluxe d'entrada que vol comprimir-se.
-   * @param output fluxe d'eixida on es deixen les dades comprimides.
-   * @return true si tot ha anat bé, false en cas contrari.
+   * @brief Compresses data from the input stream and the result is written to the output stream.
+   * @param input input stream to be compressed.
+   * @param output output stream where the compressed data will be written.
+   * @return true if the compression was successful, false if it was not.
    */
   virtual bool compress(std::istream& input, std::ostream& output) = 0;
 
   /**
-   * @brief Descomprimeix el fluxe d'entrada d'input i escriu el resultat en output.
-   * @param input fluxe de d'entrada que vol descomprimir-se.
-   * @param output fluxe de d'eixida on s'escriuen les dades descomprimides.
-   * @return true si tot ha anat bé, false en cas contrari.
+   * @brief Decompresses data from the input stream and the result is written to the output stream.
+   * @param input input stream to be decompressed.
+   * @param output output stream where the decompressed data will be written.
+   * @return true if the decompression was successful, false if it was not.
    */
   virtual bool decompress(std::istream& input, std::ostream& output) = 0;
 };
