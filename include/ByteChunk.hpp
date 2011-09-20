@@ -1,6 +1,6 @@
 /**
  * @file ByteChunk.hpp
- * @brief Fitxer amb la definició de la classe ByteChunk.
+ * @brief File including the implementation of ByteChunk class.
  * @author Joan Puigcerver Pérez <joapuipe@inf.upv.es>
  * @date May 2011
  */
