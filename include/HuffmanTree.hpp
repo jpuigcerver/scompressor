@@ -43,23 +43,23 @@ class HuffmanTree {
 private:
   /**
    * @class HNode
-   * @brief Implementa un node de l'arbre de Huffman.
+   * @brief Implements a Huffman tree node.
    * @see HSymbNode
    */
   class HNode {
   public:
-    /** Pes del node. Utilitzat en la codificació. */
+    /** Weight. Used in the codification process. */
     size_t weight;
-    /** Fill esquerre. */
+    /** Left child. */
     HNode * lchild;
-    /** Fill dret. */
+    /** Right child. */
     HNode * rchild;
 
     /** 
      * @brief Constructor.
-     * @param weight pes del node.
-     * @param left fill esquerre.
-     * @param right fill dret.
+     * @param weight node's weight.
+     * @param left left child.
+     * @param right right child.
      */
     HNode(size_t weight, HNode * left, HNode * right) 
       : weight(weight), lchild(left), rchild(right)			       
@@ -75,8 +75,8 @@ private:
     }
 
     /**
-     * @brief Indica si el node és una fulla (node terminal) o no.
-     * @return torna true si és una fulla i false si no ho és.
+     * @brief Returns whether the node is a leaf.
+     * @return true if it is a leaf, false otherwise.
      */
     virtual bool isLeaf(void) const
     { return false; }
@@ -84,18 +84,18 @@ private:
 
   /**
    * @class HSymbNode
-   * @brief Implementa un node terminal de l'arbre de Huffman.
+   * @brief Implements a Huffman tree leaf node.
    * @see HNode
    */  
   class HSymbNode : public HNode {
   public: 
-    /** Símbol codificat en el node. */
+    /** Encoded symbol in the node. */
     char symbol;
     
     /**
      * @brief Constructor.
-     * @param symb símbol que codifica el node.
-     * @param weight pes del símbol (nombre d'aparicions en l'entrada).
+     * @param symb encoded symbol in the node.
+     * @param weight weight of the symbol (number of repetitions in the input text).
      */
     HSymbNode(const char& symb, size_t weight)
       : HNode(weight, NULL, NULL), symbol(symb)
